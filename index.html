@@ -1,0 +1,72 @@
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: url('starry.jpg');
+    background-size: cover;
+  }
+</style>
+
+<link rel="stylesheet" href="https://generativeart.online/css/drawing-app.css">
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script>
+/* global nn */
+  
+function createEmoji(x, y, scale, emoji) {
+  /* setting emoji size */
+  const size = (scale * 20) + 'px'
+
+  /* essentially the same as the notes */
+  nn.create('span')
+    .content(emoji)
+    .css({
+      position: 'absolute',
+      left: x + 'px',
+      top: y + 'px',
+      fontSize: size
+    })
+    .addTo('body')
+}
+  
+/* NOTE: this function takes a lot of inspiration from the scatter example */
+
+function launchFirework(e) {
+  const fireworkEmoji = [
+    '🔴','🔵','⚪️','🟢','🟡','🟣','🟠','❤️','💙','💜',
+    '💛','💚','🧡','🩷','🩶','🩵','🤍','💠','🔶','🔹'
+  ]
+
+  /* picking a random emoji */
+  const emoji = nn.random(fireworkEmoji)
+  const lines = Math.floor(nn.random(8, 15))
+  const emojisPerLine = 6
+  const spacing = 20
+  
+  /* x and y position of click */
+  const centerX = e.x
+  const centerY = e.y
+
+  /* firework scale and rotation */
+  const scale = nn.random(0.1, 0.8)
+  const rotation = nn.random(0, Math.PI * 2)
+
+  for (let i = 0; i < lines; i++) {
+    /* dividing the circle into equal parts and adding the rotation */
+    const angle = (Math.PI * 2 * i) / lines + rotation
+    
+    /* creating the vector for each line */
+    const dx = Math.cos(angle)
+    const dy = Math.sin(angle) 
+
+    /* putting emojis along the line */
+    for (let j = 1; j <= emojisPerLine; j++) {
+      /* calculating the position of where to put each emoji */
+      const x = centerX + dx * j * spacing * scale
+      const y = centerY + dy * j * spacing * scale
+      createEmoji(x, y, scale, emoji)
+    }
+  }
+}
+
+nn.on('click', launchFirework)
+</script>
